@@ -1,6 +1,6 @@
 desc = '''Script to gather data images with a particular label.
 
-Usage: python gather_images.py <label_name> <num_samples>
+Usage: python create_image_dataset.py <label_name> <num_samples>
 
 The script will collect <num_samples> number of images and store them
 in its own directory.
