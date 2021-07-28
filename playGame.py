@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from random import choice
 from datetime import datetime
+import time
 
 REV_CLASS_MAP = {
     0: "rock",
@@ -39,7 +40,7 @@ def calculate_winner(move1, move2):
             return "Computer"
 
 
-model = tf.keras.models.load_model('model.h5')
+model = tf.keras.models.load_model('rock-paper-scissors-model.h5')
 
 cap = cv2.VideoCapture(0)
 
@@ -50,8 +51,12 @@ cap.set(cv2.CAP_PROP_FPS, 25)
 user_score = 0
 comp_score = 0
 prev_move = None
+new_game = False
 
 while True:
+    if new_game:
+        time.sleep(3)
+        new_game=False
     ret, frame = cap.read()
     if not ret:
         continue
@@ -64,7 +69,7 @@ while True:
     # extract the region of image within the user rectangle
     roi = frame[100:500, 100:500]
     img = cv2.cvtColor(roi, cv2.COLOR_BGR2RGB)
-    img = cv2.resize(img, (256, 256))
+    img = cv2.resize(img, (227, 227))
     img = np.array([img])
     
     
@@ -102,11 +107,13 @@ while True:
     if user_score>=10 and comp_score<10:
         winner = "User"
         cv2.putText(frame, "Winner: " + winner,(400, 650), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        new_game=True
         user_score = 0
         comp_score = 0
     elif user_score<10 and comp_score>=10:
         winner = "Computer"
         cv2.putText(frame, "Winner: " + winner,(400, 650), font, 2, (0, 0, 255), 4, cv2.LINE_AA)
+        new_game=True
         user_score = 0
         comp_score = 0
 
